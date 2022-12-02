@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do List</title>
+    <link href="./scss/main.scss" rel="stylesheet">
+    <script src="./js/main.js" defer type="module"></script>
+</head>
+<body>
+  <header>
+    <h1>Min lista att göra:</h1><!--Min överskrift för listan-->
+  </header>
+  
+  <form class="input_div">
+    <input type="text" id="item" name="item" placeholder="Vad vill du lägga till?" size="50"> <!--input för att skriva i listan-->
+    <button id="btnAdd">Add</button> <!--Knapp att checka av vad som är klart-->
+  </form>
+
+  <div class="todo_container"><!--lägga stylen i scss <div class="todo-container"></div>-->
+    <ul id="toDoList"></ul> <!--Ul listan id-->
+  </div>
+
+</body>
+</html>
