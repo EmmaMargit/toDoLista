@@ -1,50 +1,89 @@
 import { Todo } from "./models/todo"; // Kompilering av båda js filerna
 
-
-// Skapandet av listan 
-let toDos = [new Todo("Tvätta"), new Todo("Gå med hunden"), new Todo("Läsa en bok"), new Todo("Laga mat"), new Todo("Plugga")];
+// Skapandet av listan
+let toDos = [];
 let ul = document.getElementById("toDoList");
+let input = document.getElementById("item");
+let addButton = document.getElementById("btnAdd");
 
-function printList(){
+function printList() {
+  ul.innerHTML = "";
+  // for loop för listan items
+  for (let i = 0; i < toDos.length; i++) {
+    let item = document.createElement("li"); // <li></li>
+    item.className = "lista";
+    ul.appendChild(item); // placera initåt ul elementet
+    item.innerHTML = toDos[i].todoName;
 
-    // for loop för listan items
-    for(let i = 0; i < toDos.length; i++){
-        console.log(toDos[i]); 
-        
-        let item = document.createElement("li"); // <li></li>
-        item.className="lista";
-        if(toDos [i].completed){
-            item.innerHTML = toDos[i].todoName;
-        }else{
-            item.innerHTML = toDos[i].todoName;
-        }
-        //item.innerHTML = toDos[i].todoName; // <li>Tvätta</li>
-
-        item.addEventListener("click", () => { // Kan klicka på itemssakerna
-            handleClick(toDos[i]);
-        });
-
-        ul.appendChild(item);  // <ul><li>Tvätta</li></ul>
+    if (toDos[i].completed === true) {
+      item.classList.toggle("completed");
     }
-}
-printList();
 
-// function för knappen, det som skrivs i consolen
-function handleClick(todo){
-        console.log("Klickade på", todo);
+    function completedTodo() {
+      toDos[i].completed = !toDos[i].completed;
+      saveTodo();
+      printList();
+    }
+
+    let deleteButton = document.createElement("button");
+    deleteButton.className = "deleteButton";
+    deleteButton.innerHTML = "delete";
+    ul.appendChild(deleteButton); // placera initåt ul elementet
+    deleteButton.addEventListener("click", () => {
+      toDos.splice([i], 1);
+      saveTodo();
+    });
+
+    let completedButton = document.createElement("button");
+    completedButton.className = "completedButton";
+    completedButton.innerHTML = "done";
+    ul.appendChild(completedButton); // placera initåt ul elementet
+
+    completedButton.addEventListener("click", () => {
+      completedTodo([i]);
+    });
+
+    item.addEventListener("click", () => {
+      // Kan klicka på itemssakerna
+      handleClick(toDos[i]);
+    });
+  }
 }
 
+function addItemTolist(e) {
+  e.preventDefault();
+  let itemToAdd = new Todo(input.value, false);
+
+  toDos.push(itemToAdd);
+  console.log("todo har lagts in", toDos);
+  printList();
+  saveTodo();
+  input.value = "";
+}
 
 // Lägga till nya saker i listan
-document.getElementById("btnAdd").addEventListener("click", addItemTolist);
-function addItemTolist(){
-    let itemToAdd = document.getElementById("item").value;
-        console.log(itemToAdd);
-    let newObject = new Todo (itemToAdd);
-    newObject.completed = true;
-    toDos.push(newObject);
-    document.getElementById("toDoList").innerHTML = "";
-    printList();
+addButton.addEventListener("click", addItemTolist);
+
+function saveTodo() {
+  let todoItem = JSON.stringify(toDos);
+  localStorage.setItem("toDos", todoItem);
 }
 
-      
+window.addEventListener("load", getFromLS);
+
+function getFromLS() {
+  if (localStorage.getItem("toDos") === null) {
+    toDos = [];
+  } else {
+    toDos = JSON.parse(localStorage.getItem("toDos")).map((todoItem) => {
+      return new Todo(todoItem.todoName, todoItem.completed);
+    });
+  }
+  printList();
+}
+
+function deleteTodos() {
+  toDos.remove();
+}
+
+ul.addEventListener("click", deleteTodos);
